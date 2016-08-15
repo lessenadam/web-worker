@@ -31,7 +31,7 @@ module.exports = {
   },
 
   checkJobId: function (req, res) {
-    const jobId = req.body.jobId; // assume correct number
+    const jobId = req.query.jobId;
     Website.findById(jobId, function (err, website) {
       if (err) {
         console.log(err);
@@ -58,6 +58,8 @@ const downloadUrl = function (fullUrl) {
         function (err) {
           if (err) {
             console.log('Something wrong when updating data!', err);
+          } else {
+            console.log('%s updated successfully', fullUrl);
           }
         });
     } else {

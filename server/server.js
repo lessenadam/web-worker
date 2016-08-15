@@ -8,7 +8,7 @@ middleware(app);
 
 app.post('/api/addUrl', routeHandler.addUrl);
 
-app.post('/api/checkId', routeHandler.checkJobId);
+app.get('/api/checkId', routeHandler.checkJobId);
 
 app.get('*', function (req, res) {
   res.redirect('/');

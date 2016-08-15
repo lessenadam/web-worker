@@ -1,0 +1,5 @@
+.hint {
+  color: red;
+  font-style: italic;
+  font-size: 0.875em; /* 14px/16px = 0.875 */
+}

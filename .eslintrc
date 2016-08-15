@@ -1,10 +1,8 @@
 {
-  "extends": "airbnb",
   "parser": "babel-eslint",
   "env": {
     "browser": true,
     "node": true,
-    "mocha": true
   },
   "rules": {
     "new-cap": 0

@@ -1,6 +1,6 @@
 const express = require('express');
 const middleware = require('./middleware');
-const routeHandlers = require('./routeHandlers');
+const routeHandler = require('./route-handler');
 
 const app = express();
 
@@ -9,7 +9,7 @@ const app = express();
 
 middleware(app);
 
-routeHandlers(app);
+routeHandler(app);
 
 
 app.listen(3000, function () {

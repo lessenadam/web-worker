@@ -6,7 +6,7 @@
 
 ` $ npm install `
 
-2) Ensure mongoDB is installed and running. 
+2) Ensure mongoDB is installed and running
 
 If needing to install: https://docs.mongodb.com/manual/installation/
 

@@ -3,10 +3,10 @@ const express = require('express');
 const Website = require('./db/db-config');
 const request = require('request');
 const url = require('url');
+
 const jobQueue = [];
 
 module.exports = function routeHandlers(app) {
-
   app.use(express.static(path.join(__dirname, '/..', 'public')));
 
   app.get('*', function (req, res) {
@@ -25,7 +25,6 @@ module.exports = function routeHandlers(app) {
         jobQueue.push(website.fullUrl);
         res.send(website.id);
       }
-      
     });
   });
 
@@ -36,42 +35,44 @@ module.exports = function routeHandlers(app) {
         console.log(err);
         res.sendStatus(500);
       } else {
-        const payload = website.htmlContent || '<h1>Your site is still being indexed. Please check back soon!</h1>';
+        const payload = website.htmlContent ||
+          '<h1>Your site is still being indexed. Please check back soon!</h1>';
         console.log(payload);
         sendResponse(res, payload);
-        
       }
-      
     });
   });
-
 };
 
-const sendResponse = function(res, obj, status) {
+const sendResponse = function (res, obj, status) {
   status = status || 200;
-  res.writeHead(status, {'Content-Type': 'text/html'});
+  res.writeHead(status, { 'Content-Type': 'text/html' });
   res.end(obj);
 };
 
 
 /* worker to fetch html and update the database */
 
-const downloadUrl = function(fullUrl) {
+const downloadUrl = function (fullUrl) {
   request(fullUrl, function (error, response, body) {
     console.log('error', error);
-    if (!error && response.statusCode == 200) {
+    if (!error && response.statusCode === 200) {
       // console.log('body is', body); // Show the HTML for the Google homepage.
-      Website.findOneAndUpdate({fullUrl}, {$set:{htmlContent:body}}, {new: true}, function(err, doc){
-          if(err){
-              console.log("Something wrong when updating data!");
+      Website.findOneAndUpdate(
+        { fullUrl },
+        { $set: { htmlContent: body } },
+        { new: true },
+        function (err, doc) {
+          if (err) {
+            console.log('Something wrong when updating data!');
           }
           console.log('doc', doc);
-      });
+        });
     }
-  })
+  });
 };
 
-const checkUrls = function() {
+const checkUrls = function () {
   if (jobQueue.length > 0) {
     console.log('jobQueue:', jobQueue);
     while (jobQueue.length > 0) {
@@ -81,6 +82,6 @@ const checkUrls = function() {
   } else {
     console.log('nothing yet!');
   }
-}
+};
 
 setInterval(checkUrls, 10000);

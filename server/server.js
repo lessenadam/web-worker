@@ -4,13 +4,15 @@ const routeHandler = require('./route-handler');
 
 const app = express();
 
-// console.log('JOINED---------', path.join(__dirname, '/..', 'public'));
-// console.log('node trickery for rel paths---------', process.cwd());
-
 middleware(app);
 
-routeHandler(app);
+app.post('/api/addUrl', routeHandler.addUrl);
 
+app.post('/api/checkId', routeHandler.checkJobId);
+
+app.get('*', function (req, res) {
+  res.redirect('/');
+});
 
 app.listen(3000, function () {
   console.log('web-worker listening on port 3000!');

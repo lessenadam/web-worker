@@ -10,7 +10,7 @@ var websiteSchema = mongoose.Schema({
     type:String, required:true
   },
   htmlContent: {
-    type:String, required:true
+    type:String
   },
 });
 

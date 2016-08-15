@@ -16,7 +16,7 @@ const sendResponse = function (res, obj, status) {
 module.exports = {
   addUrl: function (req, res) {
     const fullUrl = req.body.url; // assume it's http://www.google.com
-    Website.findOrCreate({ fullUrl }, { htmlContent: '' }, function(err, website, created) {
+    Website.findOrCreate({ fullUrl }, { htmlContent: '' }, function (err, website, created) {
       if (err) {
         console.log(err);
         res.sendStatus(500);
@@ -24,14 +24,15 @@ module.exports = {
         if (created) {
           jobQueue.push(website.fullUrl);
         }
-        res.send(website.id);
+        const jobIdMessage = 'Your job ID is: ' + website.id;
+        res.send(jobIdMessage);
       }
     });
   },
 
   checkJobId: function (req, res) {
     const jobId = req.body.jobId; // assume correct number
-    Website.findById(jobId, function(err, website) {
+    Website.findById(jobId, function (err, website) {
       if (err) {
         console.log(err);
         res.sendStatus(500);

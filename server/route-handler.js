@@ -61,6 +61,7 @@ const downloadUrl = function (fullUrl) {
           }
         });
     } else {
+      response = response || { statusCode: undefined };
       console.log('request error for %s:', fullUrl, error);
       console.log('status code error for %s:', fullUrl, response.statusCode);
     }

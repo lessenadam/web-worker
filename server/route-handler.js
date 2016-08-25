@@ -1,7 +1,30 @@
 const Website = require('./db/db-config');
 const request = require('request');
+var child_process = require('child_process');
 
-const jobQueue = [];
+
+const
+  fs = require('fs'),
+  process = require('child_process');
+
+/*Create 10 worker process*/
+for(var i=0; i<10; i++) {
+  var ls = process.spawn('node', ['server/worker.js', i]);
+  
+  ls.stdout.on('data', function (data) {
+    console.log('stdout: ' + data);
+  });
+  
+  ls.stderr.on('data', function (data) {
+    console.log('stderr: ' + data);
+  });
+  
+  ls.on('close', function (code) {
+    console.log('child process exited with code ' + code);
+  });
+}
+
+// const jobQueue = [];
 
 /* helper function for route handler */
 
@@ -10,6 +33,10 @@ const sendResponse = function (res, obj, status) {
   res.writeHead(status, { 'Content-Type': 'text/html' });
   res.end(obj);
 };
+
+
+
+
 
 /* export the route handler */
 
@@ -21,11 +48,28 @@ module.exports = {
         console.log(err);
         res.sendStatus(500);
       } else {
-        if (created) {
-          jobQueue.push(website.fullUrl);
-        }
         const jobIdMessage = 'Your job ID is: ' + website.id;
         res.send(jobIdMessage);
+        if (created) {
+          // jobQueue.push(website.fullUrl);
+          // urlWorkers.running += 1;
+          // console.log('urlWorkers running now: ', urlWorkers.running)
+          // urlWorkers.task()
+          var ls = process.exec('node server/sender.js '+website.fullUrl, function (error, stdout, stderr) {
+               if (error) {
+                 console.log(error.stack);
+                 console.log('Error code: '+error.code);
+                 console.log('Signal received: '+error.signal);
+               }
+               console.log('stdout: ' + stdout);
+               console.log('stderr: ' + stderr);
+               
+             });
+            
+             ls.on('exit', function (code) {
+               console.log('Child process exited with exit code '+code);
+             });
+        }
       }
     });
   },
@@ -47,7 +91,7 @@ module.exports = {
 
 
 /* worker to fetch html and update the database */
-
+/* 
 const downloadUrl = function (fullUrl) {
   request(fullUrl, function (error, response, body) {
     if (!error && response.statusCode === 200) {
@@ -71,12 +115,21 @@ const downloadUrl = function (fullUrl) {
 };
 
 const checkUrls = function () {
+  console.log('checkUrls is called!');
+  console.log('inside running is', urlWorkers.running);
   if (jobQueue.length > 0) {
     while (jobQueue.length > 0) {
       const fullUrl = jobQueue.shift();
       downloadUrl(fullUrl);
     }
   }
+  urlWorkers.running -= 1;
 };
 
-setInterval(checkUrls, 10000);
+const urlWorkers = {
+  running: 0,
+  task: checkUrls
+}
+
+*/
+

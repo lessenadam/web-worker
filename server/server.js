@@ -14,6 +14,11 @@ app.get('*', function (req, res) {
   res.redirect('/');
 });
 
+app.post('/login', (req, res) => {
+  console.log('req.body----------', req.body);
+  res.send(200);
+});
+
 app.listen(3000, function () {
   console.log('web-worker listening on port 3000!');
 });
